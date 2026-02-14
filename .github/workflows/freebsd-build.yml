@@ -34,11 +34,17 @@ jobs:
           version: "14.2"
           architecture: x86-64
           run: |
-            sudo env IGNORE_OSVERSION=yes pkg install -y rust cmake ninja pkgconf llvm18 go
+            sudo env IGNORE_OSVERSION=yes pkg install -y rust cmake ninja pkgconf llvm18 go perl5 gmake
             export LIBCLANG_PATH=/usr/local/llvm18/lib
             export CC=clang
             export CXX=clang++
-            cargo build --release
+            export RUST_BACKTRACE=1
+            cargo build --release 2>&1 || true
+            # If first attempt fails, retry with verbose output
+            if [ ! -f target/release/grok2api-rs ]; then
+              echo "=== Retrying with verbose ==="
+              cargo build --release -vv 2>&1 | tail -200
+            fi
             strip target/release/grok2api-rs
 
       - name: Package artifact
