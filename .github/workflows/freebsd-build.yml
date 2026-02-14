@@ -34,8 +34,10 @@ jobs:
           version: "14.2"
           architecture: x86-64
           run: |
-            sudo env IGNORE_OSVERSION=yes pkg install -y rust cmake ninja pkgconf llvm18
+            sudo env IGNORE_OSVERSION=yes pkg install -y rust cmake ninja pkgconf llvm18 go
             export LIBCLANG_PATH=/usr/local/llvm18/lib
+            export CC=clang
+            export CXX=clang++
             cargo build --release
             strip target/release/grok2api-rs
 
