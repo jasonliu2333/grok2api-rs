@@ -34,13 +34,17 @@ jobs:
           version: "14.2"
           architecture: x86-64
           run: |
-            sudo env IGNORE_OSVERSION=yes pkg install -y rust cmake ninja pkgconf llvm18 go perl5 gmake
+            sudo env IGNORE_OSVERSION=yes pkg install -y rust cmake ninja pkgconf llvm18 go perl5 gmake nasm
+            export PATH="/usr/local/bin:/usr/local/go/bin:$PATH"
             export LIBCLANG_PATH=/usr/local/llvm18/lib
             export CC=clang
             export CXX=clang++
             export CMAKE_MAKE_PROGRAM=/usr/local/bin/ninja
             export CMAKE_GENERATOR=Ninja
-            export MAKEFLAGS=""
+            # Debug: verify tools are available
+            which go cmake ninja clang clang++ perl
+            go version
+            cmake --version | head -1
             cargo build --release
             strip target/release/grok2api-rs
 
